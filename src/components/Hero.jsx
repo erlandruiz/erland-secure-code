@@ -1,23 +1,27 @@
-function Hero (){
-    return(
-        <section className="bg-slate-950 px-6 py-24 text-white">
-            <div className="mx-auto max-w-7xl">
-                <p className="mb-4 font-mono text-sm text-cyan-400">
-                    CÓDIGO ° SEGURIDAD  ° DESAROLLO
-                </p>
-                <h1 className="max-w-3xl font-display text-5xl font-bold leading-tight">
-                    Código seguro para
-                    <span className="text-cyan-400"> desarrolladores</span>
-                </h1>
-                <p className="mt-6 max-w-2xl font-sans text-lg text-slate-400">
-                    Recursos digitales de ciberseguridad para construcción de aplicaciones más seguras
-                </p>
-                <button className="mt-8 rounded-lg bg-cyan-400 px-6 py-3 font-sans font-semibold text-slate-950 transition hover:bg-cyan-300">
-                    Explorar productos
-                </button>
-            </div>
-        </section>
-    )
+function Hero() {
+  return (
+    <section className="bg-brand-bg px-6 py-16 text-brand-text sm:py-20 lg:py-24">
+      <div className="mx-auto max-w-7xl">
+        <p className="mb-4 font-mono text-sm font-medium text-brand-secondary">
+          CÓDIGO • SEGURIDAD • DESARROLLO
+        </p>
+
+        <h1 className="max-w-3xl font-display text-4xl font-extrabold leading-tight sm:text-5xl lg:text-6xl">
+          Código seguro para
+          <span className="text-brand-primary"> desarrolladores</span>
+        </h1>
+
+        <p className="mt-6 max-w-2xl font-sans text-base font-medium text-brand-muted sm:text-lg">
+          Recursos digitales de ciberseguridad para ayudarte a construir
+          aplicaciones más seguras.
+        </p>
+
+        <button className="mt-8 rounded-lg bg-brand-primary px-6 py-3 font-sans font-bold text-brand-bg transition hover:opacity-90">
+          Explorar productos
+        </button>
+      </div>
+    </section>
+  );
 }
 
 export default Hero;
