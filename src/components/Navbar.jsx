@@ -1,27 +1,20 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 
 import { Link } from "react-router-dom";
 import erlandsecurecodelogo from "../assets/erland-securecode-logo.png";
-import { CartContext } from "../context/CartContext";
+
+import CartWidget from "./CartWidget";
 
 function Navbar() {
-  const { cart } = useContext(CartContext);
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const [menuOpen , setMenuOpen] = useState(false)
-
-  const totalItems = cart.reduce((total, item) => total + item.quantity, 0);
- return (
+  return (
     <nav className="w-full border-b border-brand-surface bg-brand-bg">
       <div className="mx-auto max-w-7xl px-6">
-
         {/* Barra principal */}
         <div className="flex items-center justify-between py-4">
-
           {/* Logo */}
-          <Link
-            to="/"
-            onClick={() => setMenuOpen(false)}
-          >
+          <Link to="/" onClick={() => setMenuOpen(false)}>
             <img
               src={erlandsecurecodelogo}
               alt="Erland SecureCode"
@@ -32,10 +25,7 @@ function Navbar() {
           {/* Menú desktop */}
           <ul className="hidden items-center gap-8 font-sans text-sm font-semibold text-brand-muted md:flex">
             <li>
-              <Link
-                className="transition hover:text-brand-primary"
-                to="/"
-              >
+              <Link className="transition hover:text-brand-primary" to="/">
                 Inicio
               </Link>
             </li>
@@ -59,12 +49,7 @@ function Navbar() {
             </li>
 
             <li>
-              <Link
-                className="transition hover:text-brand-primary"
-                to="/carrito"
-              >
-                Carrito ({totalItems})
-              </Link>
+              <CartWidget />
             </li>
           </ul>
 
@@ -111,18 +96,11 @@ function Navbar() {
               </Link>
             </li>
 
-            <li>
-              <Link
-                to="/carrito"
-                onClick={() => setMenuOpen(false)}
-                className="block py-2 transition hover:text-brand-primary"
-              >
-                Carrito ({totalItems})
-              </Link>
+            <li onClick={() => setMenuOpen(false)} className="py-2">
+              <CartWidget />
             </li>
           </ul>
         )}
-
       </div>
     </nav>
   );

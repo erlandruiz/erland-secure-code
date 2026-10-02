@@ -1,17 +1,22 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+
 import { useSearchParams } from "react-router-dom";
 
-import ProductCard from "./ProductCard";
 import { getProducts } from "../firebase/products.service";
+import ItemList from "./ItemList";
 
-function Products() {
+function ItemListContainer() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const [searchParams] = useSearchParams();
 
-  const selectedCategory = searchParams.get("category");
+  const selectedCategory =
+    searchParams.get("category");
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -19,11 +24,15 @@ function Products() {
         setLoading(true);
         setError("");
 
-        const productsFromFirebase = await getProducts();
+        const productsFromFirebase =
+          await getProducts();
 
         setProducts(productsFromFirebase);
       } catch (error) {
-        console.error("Error al cargar productos:", error);
+        console.error(
+          "Error al cargar productos:",
+          error
+        );
 
         setError(
           "No se pudieron cargar los productos."
@@ -87,26 +96,13 @@ function Products() {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredProducts.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              name={product.name}
-              category={product.category}
-              type={product.type}
-              price={product.price}
-              level={product.level}
-              technologies={product.technologies}
-              description={product.description}
-              image={product.image}
-            />
-          ))}
-        </div>
+        <ItemList
+          products={filteredProducts}
+        />
 
       </div>
     </section>
   );
 }
 
-export default Products;
+export default ItemListContainer;

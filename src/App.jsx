@@ -1,11 +1,12 @@
 import { Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import Products from "./components/Products";
+
 import Cart from "./components/Cart";
 import Checkout from "./components/Checkout";
 import Categories from "./components/Categories";
-import ProductDetail from "./components/ProductDetail";
+import ItemDetailContainer from "./components/ItemDetailContainer";
+import ItemListContainer from "./components/ItemListContainer";
 
 function App() {
   return (
@@ -19,16 +20,16 @@ function App() {
           element={
             <>
               <Hero />
-              <Products />
+              <ItemListContainer />
             </>
           }
         />
 
         {/* Página de productos */}
-        <Route path="/productos" element={<Products />} />
+        <Route path="/productos" element={<ItemListContainer />} />
 
         {/* Página producto unico */}
-        <Route path="/producto/:id" element={<ProductDetail />} />
+        <Route path="/producto/:id" element={<ItemDetailContainer />} />
 
         {/* Página de categorias */}
         <Route path="/categorias" element={<Categories />} />

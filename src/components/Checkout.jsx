@@ -1,13 +1,10 @@
-import {
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { Link } from "react-router-dom";
 
 import { CartContext } from "../context/CartContext";
 import { createOrder } from "../firebase/orders.service";
+import CheckoutForm from "./CheckoutForm";
 
 function Checkout() {
   const { cart, clearCart } = useContext(CartContext);
@@ -16,30 +13,22 @@ function Checkout() {
   const [email, setEmail] = useState("");
 
   const [ticket, setTicket] = useState(() => {
-    const savedTicket = localStorage.getItem(
-      "erland-securecode-ticket"
-    );
+    const savedTicket = localStorage.getItem("erland-securecode-ticket");
 
-    return savedTicket
-      ? JSON.parse(savedTicket)
-      : null;
+    return savedTicket ? JSON.parse(savedTicket) : null;
   });
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
   const total = cart.reduce(
-    (accumulator, item) =>
-      accumulator + item.price * item.quantity,
-    0
+    (accumulator, item) => accumulator + item.price * item.quantity,
+    0,
   );
 
   useEffect(() => {
     if (ticket) {
-      localStorage.setItem(
-        "erland-securecode-ticket",
-        JSON.stringify(ticket)
-      );
+      localStorage.setItem("erland-securecode-ticket", JSON.stringify(ticket));
     }
   }, [ticket]);
 
@@ -55,9 +44,7 @@ function Checkout() {
       setError("");
 
       // Número visible para el cliente
-      const ticketNumber = `ESC-${Date.now()
-        .toString()
-        .slice(-6)}`;
+      const ticketNumber = `ESC-${Date.now().toString().slice(-6)}`;
 
       // Guardamos la compra en Firestore
       const firestoreOrderId = await createOrder({
@@ -85,14 +72,9 @@ function Checkout() {
       // correctamente la compra
       clearCart();
     } catch (error) {
-      console.error(
-        "Error al guardar la compra:",
-        error
-      );
+      console.error("Error al guardar la compra:", error);
 
-      setError(
-        "No se pudo registrar la compra. Inténtalo nuevamente."
-      );
+      setError("No se pudo registrar la compra. Inténtalo nuevamente.");
     } finally {
       setSaving(false);
     }
@@ -104,9 +86,7 @@ function Checkout() {
     setEmail("");
     setError("");
 
-    localStorage.removeItem(
-      "erland-securecode-ticket"
-    );
+    localStorage.removeItem("erland-securecode-ticket");
   };
 
   if (ticket) {
@@ -124,42 +104,40 @@ function Checkout() {
 
             <div className="mt-6 space-y-2 font-sans text-brand-muted">
               <p>
-                <span className="font-bold text-brand-text">
-                  Cliente:
-                </span>{" "}
+                <span className="font-bold text-brand-text">Cliente:</span>{" "}
                 {ticket.name}
               </p>
 
               <p>
-                <span className="font-bold text-brand-text">
-                  Correo:
-                </span>{" "}
+                <span className="font-bold text-brand-text">Correo:</span>{" "}
                 {ticket.email}
               </p>
 
               <p>
-                <span className="font-bold text-brand-text">
-                  Fecha:
-                </span>{" "}
+                <span className="font-bold text-brand-text">Fecha:</span>{" "}
                 {ticket.date}
               </p>
+
+              {ticket.firestoreOrderId && (
+                <p>
+                  <span className="font-bold text-brand-text">
+                    ID de orden:
+                  </span>{" "}
+                  <span className="break-all font-mono text-brand-secondary">
+                    {ticket.firestoreOrderId}
+                  </span>
+                </p>
+              )}
             </div>
 
             <div className="mt-8 border-t border-brand-muted/20 pt-6">
-              <h2 className="font-display text-xl font-bold">
-                Productos
-              </h2>
+              <h2 className="font-display text-xl font-bold">Productos</h2>
 
               <div className="mt-4 space-y-4">
                 {ticket.products.map((product) => (
-                  <div
-                    key={product.id}
-                    className="flex justify-between gap-4"
-                  >
+                  <div key={product.id} className="flex justify-between gap-4">
                     <div>
-                      <p className="font-sans font-bold">
-                        {product.name}
-                      </p>
+                      <p className="font-sans font-bold">{product.name}</p>
 
                       <p className="font-sans text-sm text-brand-muted">
                         Cantidad: {product.quantity}
@@ -167,11 +145,7 @@ function Checkout() {
                     </div>
 
                     <p className="font-sans font-bold text-brand-primary">
-                      S/{" "}
-                      {(
-                        product.price *
-                        product.quantity
-                      ).toFixed(2)}
+                      S/ {(product.price * product.quantity).toFixed(2)}
                     </p>
                   </div>
                 ))}
@@ -180,9 +154,7 @@ function Checkout() {
 
             <div className="mt-8 border-t border-brand-muted/20 pt-6">
               <div className="flex items-center justify-between">
-                <span className="font-display text-xl font-bold">
-                  Total
-                </span>
+                <span className="font-display text-xl font-bold">Total</span>
 
                 <span className="font-display text-2xl font-extrabold text-brand-primary">
                   S/ {ticket.total.toFixed(2)}
@@ -191,8 +163,8 @@ function Checkout() {
             </div>
 
             <p className="mt-8 rounded-lg bg-brand-bg p-4 font-sans text-sm font-medium text-brand-muted">
-              Se ha simulado el envío de la confirmación
-              de compra al correo {ticket.email}.
+              Se ha simulado el envío de la confirmación de compra al correo{" "}
+              {ticket.email}.
             </p>
 
             <Link
@@ -211,7 +183,6 @@ function Checkout() {
   return (
     <section className="min-h-screen bg-brand-bg px-6 py-16 text-brand-text">
       <div className="mx-auto max-w-2xl">
-
         <p className="font-mono text-sm font-medium text-brand-secondary">
           CHECKOUT
         </p>
@@ -221,8 +192,7 @@ function Checkout() {
         </h1>
 
         <p className="mt-3 font-sans font-medium text-brand-muted">
-          Ingresa tus datos para generar el ticket de
-          compra.
+          Ingresa tus datos para generar el ticket de compra.
         </p>
 
         {cart.length === 0 && (
@@ -231,81 +201,18 @@ function Checkout() {
           </p>
         )}
 
-        {error && (
-          <p className="mt-6 rounded-lg bg-red-500/10 p-4 font-sans font-semibold text-red-400">
-            {error}
-          </p>
-        )}
-
-        <form
+   
+        <CheckoutForm
+          name={name}
+          email={email}
+          setName={setName}
+          setEmail={setEmail}
+          total={total}
+          saving={saving}
+          cartIsEmpty={cart.length === 0}
+          error={error}
           onSubmit={handleSubmit}
-          className="mt-8 rounded-xl bg-brand-surface p-6 sm:p-8"
-        >
-          <div>
-            <label
-              htmlFor="name"
-              className="font-sans font-bold"
-            >
-              Nombre
-            </label>
-
-            <input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(event) =>
-                setName(event.target.value)
-              }
-              required
-              className="mt-2 w-full rounded-lg border border-brand-muted/30 bg-brand-bg px-4 py-3 font-sans text-brand-text outline-none transition focus:border-brand-primary"
-            />
-          </div>
-
-          <div className="mt-6">
-            <label
-              htmlFor="email"
-              className="font-sans font-bold"
-            >
-              Correo electrónico
-            </label>
-
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(event) =>
-                setEmail(event.target.value)
-              }
-              required
-              className="mt-2 w-full rounded-lg border border-brand-muted/30 bg-brand-bg px-4 py-3 font-sans text-brand-text outline-none transition focus:border-brand-primary"
-            />
-          </div>
-
-          <div className="mt-8 border-t border-brand-muted/20 pt-6">
-            <div className="flex items-center justify-between">
-              <span className="font-display text-xl font-bold">
-                Total
-              </span>
-
-              <span className="font-display text-2xl font-extrabold text-brand-primary">
-                S/ {total.toFixed(2)}
-              </span>
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            disabled={
-              cart.length === 0 || saving
-            }
-            className="mt-8 w-full rounded-lg bg-brand-primary px-6 py-3 font-sans font-bold text-brand-bg transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {saving
-              ? "Registrando compra..."
-              : "Generar ticket"}
-          </button>
-        </form>
-
+        />
       </div>
     </section>
   );

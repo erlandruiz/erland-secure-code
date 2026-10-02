@@ -1,77 +1,113 @@
-import { createContext, useState, useEffect } from "react";
+import {
+  createContext,
+  useEffect,
+  useState,
+} from "react";
 
 const CartContext = createContext();
 
 function CartProvider({ children }) {
   const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem("erland-securecode-cart");
+    const savedCart = localStorage.getItem(
+      "erland-securecode-cart"
+    );
 
-    return savedCart ? JSON.parse(savedCart) : [];
+    return savedCart
+      ? JSON.parse(savedCart)
+      : [];
   });
 
   useEffect(() => {
-  localStorage.setItem(
-    "erland-securecode-cart",
-    JSON.stringify(cart)
-  );
-}, [cart]);
+    localStorage.setItem(
+      "erland-securecode-cart",
+      JSON.stringify(cart)
+    );
+  }, [cart]);
 
-  // Agrega un producto al carrito
-  const addToCart = (product) => {
+  // Agrega un producto con la cantidad seleccionada
+  const addToCart = (product, quantity = 1) => {
     setCart((currentCart) => {
       const existingProduct = currentCart.find(
-        (item) => item.id === product.id,
+        (item) => item.id === product.id
       );
 
       if (existingProduct) {
-        return currentCart.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item,
-        );
+        return currentCart.map((item) => {
+          if (item.id === product.id) {
+            const newQuantity =
+              item.quantity + quantity;
+
+            return {
+              ...item,
+              quantity: Math.min(
+                newQuantity,
+                product.stock
+              ),
+            };
+          }
+
+          return item;
+        });
       }
 
       return [
         ...currentCart,
         {
           ...product,
-          quantity: 1,
+          quantity: Math.min(
+            quantity,
+            product.stock
+          ),
         },
       ];
     });
   };
 
-  // Aumenta la cantidad de un producto
+  // Aumenta una unidad sin superar el stock
   const increaseQuantity = (productId) => {
     setCart((currentCart) =>
-      currentCart.map((item) =>
-        item.id === productId ? { ...item, quantity: item.quantity + 1 } : item,
-      ),
+      currentCart.map((item) => {
+        if (
+          item.id === productId &&
+          item.quantity < item.stock
+        ) {
+          return {
+            ...item,
+            quantity: item.quantity + 1,
+          };
+        }
+
+        return item;
+      })
     );
   };
 
-  // Disminuye la cantidad de un producto
+  // Disminuye una unidad
   const decreaseQuantity = (productId) => {
     setCart((currentCart) =>
       currentCart
         .map((item) =>
           item.id === productId
-            ? { ...item, quantity: item.quantity - 1 }
-            : item,
+            ? {
+                ...item,
+                quantity: item.quantity - 1,
+              }
+            : item
         )
-        .filter((item) => item.quantity > 0),
+        .filter((item) => item.quantity > 0)
     );
   };
 
   // Elimina completamente un producto
   const removeFromCart = (productId) => {
     setCart((currentCart) =>
-      currentCart.filter((item) => item.id !== productId),
+      currentCart.filter(
+        (item) => item.id !== productId
+      )
     );
   };
 
-  //Vacia el carrito
-
+  // Vacía todo el carrito
   const clearCart = () => {
     setCart([]);
   };
@@ -92,4 +128,7 @@ function CartProvider({ children }) {
   );
 }
 
-export { CartContext, CartProvider };
+export {
+  CartContext,
+  CartProvider,
+};
